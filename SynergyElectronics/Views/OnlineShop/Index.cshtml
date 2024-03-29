@@ -1,0 +1,342 @@
+﻿
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        /* background-image: linear-gradient( rgba(0,0,0,0.5), url(https://mobirise.com/extensions/digitalm4/assets/images/background5.jpg)); */
+        background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(https://mobirise.com/extensions/digitalm4/assets/images/background5.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    #startPage {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #quote {
+        width: 50%;
+        color: #fff;
+        text-align: center;
+    }
+
+        #quote h1 {
+            font-size: 5.5em;
+            font-weight: bolder;
+        }
+
+    #search {
+        width: 50%;
+        margin-top: 20px;
+        padding: 10px;
+        text-align: center;
+    }
+
+        #search form #searchBox {
+            background-color: white;
+            background-image: url(https://www.w3schools.com/css/searchicon.png);
+            background-position: 10px 10px;
+            background-repeat: no-repeat;
+            padding-left: 40px;
+            height: 40px;
+            border-radius: 60px;
+        }
+
+        #search form #searchBtn {
+            margin-top: 25px;
+        }
+
+    #searchBtn #srchBtn {
+        font-size: 20px;
+        border-radius: 30px;
+    }
+
+    #searchBtn button:hover {
+        background: #f0ad4e;
+        color: #000;
+    }
+
+    #goTo {
+        margin-top: 40px;
+        padding: 10px 15px;
+        font-size: 25px;
+        border-radius: 20px;
+        background-color: #8E7AB5;
+        color: #fff;
+    }
+
+        #goTo span {
+            vertical-align: middle;
+        }
+
+        #goTo:hover {
+            background-color: #AD88C6;
+            transform: scale(1.5);
+        }
+
+    #products {
+        background-color: #fff;
+        margin-top: 5%;
+        padding: 2% 10%;
+    }
+
+    .box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin: 15px 10px;
+        width: 450px;
+    }
+
+    #prodImg {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        width: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom: 1px solid #c8c8c8;
+    }
+
+        #prodImg img {
+            height: 200px;
+            aspect-ratio: 1/0;
+        }
+
+    .box:hover {
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    }
+
+    #details {
+        padding: 10px;
+    }
+
+
+    .heading {
+        text-align: center;
+        margin: auto;
+        font-size: 40px;
+        border-bottom: 5px #f0ad4e solid;
+        width: 70%;
+        margin-top: 20px;
+    }
+
+    .AboutHeading {
+        text-align: center;
+        margin: auto;
+        margin-top: 100px;
+        font-size: 40px;
+        border-bottom: 5px #f0ad4e solid;
+        width: 70%;
+    }
+
+    .categoryBox {
+        padding: 1%;
+        margin-top: 2%;
+        overflow: hidden;
+    }
+
+        .categoryBox h3 {
+            width: 90%;
+            display: inline-block;
+            margin-top: 0;
+        }
+
+    .viewAll {
+        float: right;
+    }
+</style>
+
+
+
+<div id="startPage">
+    <div id="quote">
+        <h1>Synergy Electronics</h1>
+        <h3>You Can Count On</h3>
+    </div>
+    <div id="search">
+        <form asp-controller="OnlineShop" id="myForm" asp-action="SpecificList" method="post">
+            <input type="text" name="Data" id="searchBox" placeholder="Search Products..." class="form-control fs-3" />
+            <div id="searchBtn">
+                <button type="submit" id="srchBtn" class="btn btn-warning"><span class="glyphicon glyphicon-search"></span> Search</button>
+            </div>
+
+        </form>
+    </div>
+    <div>
+        <a id="goTo" href="#products" class="btn">Go to Products <span class="glyphicon glyphicon-circle-arrow-right"></span></a>
+    </div>
+</div>
+
+<div id="products">
+    <div  class="heading">Categories</div>
+    <div class="categoryBox">
+        <h3>Mobile & Tablets</h3>
+        <a class="btn btn-primary viewAll" href="/OnlineShop/SpecificList/1">View All</a>
+        <div id="MobiesAndTablets" class="rounded-3 mt-2"></div>
+        <script type="text/x-kendo-tmpl" id="template">
+            <div class="box">
+                <div id="prodImg">
+                 <img src=#:prod_Img# />
+                 </div>
+                 <div id="details">
+                 <h6>#:prod_Name#</h6>
+                 <h5>#:prod_Price#</h5>
+             <a id="cart" class="btn btn-primary" onclick="AddToCart(#:prod_Id#)">Add to Cart</a>
+
+
+                 </div>
+
+             </div>
+        </script>
+    </div>
+
+    <div class="categoryBox">
+        <h3>Laptop & Computers</h3>
+        <a class="btn btn-primary viewAll" href="/OnlineShop/SpecificList/2">View All</a>
+        <div id="LaptopAndDesktop" class="rounded-3 mt-2"></div>
+    </div>
+
+    <div class="categoryBox">
+        <h3>TV, Audios & Cameras</h3>
+        <a class="btn btn-primary viewAll" href="/OnlineShop/SpecificList/3">View All</a>
+        <div id="TvAduiosAndCameras" class="rounded-3 mt-2"></div>
+    </div>
+
+
+    <div id="aboutUs" class="AboutHeading mb-5">About us</div>
+    <section class="py-3 py-md-5 py-xl-8">
+        <div class="container">
+            <div class="row gy-3 gy-md-4 gy-lg-0 align-items-lg-center">
+                <div class="col-12 col-lg-6 col-xl-5">
+                    <img class="img-fluid rounded" loading="lazy" src="https://bootstrapbrain.com/demo/components/abouts/about-1/assets/img/about-img-1.jpg" alt="">
+                </div>
+                <div class="col-12 col-lg-6 col-xl-7">
+                    <div class="row justify-content-xl-center">
+                        <div class="col-12 col-xl-11">
+                            <h2 class="h1 mb-3">Who Are We?</h2>
+                            <p class="lead fs-4 text-secondary mb-3">We help people to build incredible brands and superior products. Our perspective is to furnish outstanding captivating services.</p>
+                            <p class="mb-5">Nullam gravida orci ac luctus molestie. Fusce finibus congue erat, non aliquam magna tincidunt at. Aenean lacinia arcu ex, sed pharetra nibh porta a. Curabitur vel consequat nibh, ac interdum nisl. Nunc pulvinar nec massa vitae sollicitudin.</p>
+                            <div class="row gy-4 gy-md-0 gx-xxl-5X">
+                                <div class="col-12 col-md-6">
+                                    <div class="d-flex">
+                                        <div class="me-4 text-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                                                <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-3">Versatile Brand</h4>
+                                            <p class="text-secondary mb-0">We are crafting a digital method that subsists life across all mediums.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div class="d-flex">
+                                        <div class="me-4 text-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-fire" viewBox="0 0 16 16">
+                                                <path d="M8 16c3.314 0 6-2 6-5.5 0-1.5-.5-4-2.5-6 .25 1.5-1.25 2-1.25 2C11 4 9 .5 6 0c.357 2 .5 4-2 6-1.25 1-2 2.729-2 4.5C2 14 4.686 16 8 16Zm0-1c-1.657 0-3-1-3-2.75 0-.75.25-2 1.25-3C6.125 10 7 10.5 7 10.5c-.375-1.25.5-3.25 2-3.5-.179 1-.25 2 1 3 .625.5 1 1.364 1 2.25C11 14 9.657 15 8 15Z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-3">Digital Agency</h4>
+                                            <p class="text-secondary mb-0">We believe in innovation by merging primary with elaborate ideas.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+    $(document).ready(function () {
+
+        getAllProducts("Mobile & Tablets");
+        getAllProducts("Laptop & Computers");
+        getAllProducts("TV, Audio & Cameras");
+
+
+
+
+
+
+        $("#MobiesAndTablets").kendoListView({
+            template: kendo.template($("#template").html()),
+            layout: "flex",
+        });
+
+        $("#LaptopAndDesktop").kendoListView({
+            template: kendo.template($("#template").html()),
+            layout: "flex",
+        });
+
+        $("#TvAduiosAndCameras").kendoListView({
+            template: kendo.template($("#template").html()),
+            layout: "flex",
+        });
+
+        $("#myForm").on("submit", function (e) {
+            var data = $("input[name=Data]").val();
+            if (data == "") {
+                e.preventDefault();
+            }
+        })
+
+    });
+</script>
+<script>
+    function getAllProducts(category) {
+        $.ajax({
+            url: "/OnlineShop/AllProducts",
+            success: function (data) {
+                var products = data.filter(function (item) {
+                    return (item.subCategories.categories.category_Name == category);
+                })
+
+                var dataSource = new kendo.data.DataSource({
+                    data: products
+                });
+                if (category == "Mobile & Tablets") {
+                    var mobile = $("#MobiesAndTablets").data("kendoListView");
+                    mobile.setDataSource(dataSource);
+                }
+                else if (category == "Laptop & Computers") {
+                    var laptop = $("#LaptopAndDesktop").data("kendoListView");
+                    laptop.setDataSource(dataSource);
+                }
+                else {
+                    var tv = $("#TvAduiosAndCameras").data("kendoListView");
+                    tv.setDataSource(dataSource);
+                }
+            }
+        });
+    }
+
+    function AddToCart(prod_Id) {
+        var id = { prod_Id: prod_Id };
+        console.log(id);
+        $.ajax({
+            type: "POST",
+            url: `/OnlineShop/AddCart/`,
+            data: id,
+            success: function (status) {
+                alert(status);
+            },
+            error: function (status) {
+                alert(status);
+            }
+
+        });
+    }
+
+</script>

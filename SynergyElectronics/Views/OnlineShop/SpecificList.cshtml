@@ -1,0 +1,206 @@
+﻿
+
+<style>
+
+    #quote {
+        width: 50%;
+        margin: auto;
+        color: #000;
+        font-size: 35px;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 4%;
+        margin-bottom: 4%;
+    }
+
+    #search {
+        margin: auto;
+        width: 50%;
+        margin-top: 5%;
+        padding: 10px;
+        text-align: center;
+    }
+
+        #search form #searchBox {
+            background-color: white;
+            background-image: url(https://www.w3schools.com/css/searchicon.png);
+            background-position: 5px 5px;
+            background-repeat: no-repeat;
+            padding-left: 40px;
+            font-size: 18px;
+        }
+
+        #search form #searchBtn {
+            margin-top: 25px;
+        }
+
+    #searchBtn #srchBtn {
+        font-size: 18px;
+    }
+
+    #searchBtn button:hover {
+        background: #f0ad4e;
+        color: #000;
+    }
+
+     #mainBody {
+                
+                margin-top: 30px;
+                margin-bottom: 50px;
+                padding: 0;
+            }
+
+    .categoryBox{
+        background-color: darkslateblue;
+        border-radius: 10px;
+        margin-top: 20px;
+        padding: 10px 15px;
+    }
+    .box {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        display: flex;
+        margin: 10px;
+    }
+
+    #prodImg {
+        padding: 20px;
+        width: 35%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-right: 1px solid #c8c8c8;
+    }
+
+        #prodImg img {
+            height: 200px;
+            aspect-ratio: 1/0;
+        }
+
+    .box:hover {
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+    }
+
+    #details {
+        padding: 10px 20px;
+    }
+    .show{
+        display: block;
+    }
+   .hide{
+       display: none;
+   }
+</style>
+
+
+
+
+
+<div id="search">
+    <form asp-controller="OnlineShop" id="myForm" asp-action="SpecificList" method="post">
+        <input type="text" name="Data" placeholder="Search Products..." class="form-control" />
+        <div id="searchBtn">
+            <button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search"></span> Search</button>
+        </div>
+
+    </form>
+</div>
+
+<div id="mainBody" class="container">
+    <p class="hide" id="searchPara">You have searched for: <strong id="searchInfo">@TempData["dataArray"]</strong></p>
+    <p id="categoryId" class="d-none">@TempData["catId"]</p>
+    <div class="categoryBox">
+        <div id="itemsList" class="rounded-3 mt-2"></div>
+        <script type="text/x-kendo-tmpl" id="template">
+            <div class="box">
+                <div id="prodImg">
+                    <img src=#:prod_Img# />
+                </div>
+                <div id="details">
+                    <h4>#:prod_Name#</h4>
+                    <h5><strong>Rs.#:prod_Price#</strong></h5>
+                    <a id="cart" class="btn btn-primary" onclick="AddToCart(#:prod_Id#)">Add to Cart</a>
+                </div>
+            </div>
+        </script>
+    </div>
+
+    @* no DATA *@
+    <div id="isResFound" class="hide">
+        <img src="https://i.pinimg.com/originals/89/39/06/893906d9df7228cc36e1b3679a0d1dac.png" height="400" width="440" />
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        var data = $("#searchInfo").text();
+        var catId = $("#categoryId").text();
+        getAllProducts(data, catId);
+
+        
+
+    });
+</script>
+<script>
+    function getAllProducts(searchedItem, catId) {
+        if (searchedItem.length > 0) {
+            $("#searchPara").addClass("show");
+            var seaItem = searchedItem.toLowerCase();
+            var itemsList = seaItem.split(" ");
+        }
+       
+
+        $.ajax({
+            url: "/OnlineShop/AllProducts",
+            success: function (data) {
+                var products = data.filter(function (item) {
+                    return (item.prod_Name.toLowerCase().includes(seaItem) || item.subCategories.subCategory_Name.toLowerCase().includes(seaItem) || item.subCategories.subCategory_Id == catId);
+                })
+
+                // if (products.length < 1) {
+                //     products = data.filter(function (item) {
+                //         var res = null;
+
+                //         itemsList.forEach(function (value) {
+                //             if (item.prod_Name.toLowerCase().includes(value) || item.subCategories.subCategory_Name.toLowerCase().includes(value) || item.subCategories.category_Id == catId) {
+
+                //                 res = item;
+                //             }
+                //         })
+                //         if (res != null) {
+                //             return res;
+                //         }
+                //     })
+                // }
+
+                if (products.length < 1) {
+                    $("#isResFound").addClass("show text-center");
+                }
+                else {
+                    console.log(products.length);
+                    $("#isResFound").addClass("hide");
+                    var dataSource = new kendo.data.DataSource({
+                        data: products,
+                        pageSize: 5,
+                    });
+
+                    $("#itemsList").kendoListView({
+                        dataSource: dataSource,
+                        template: kendo.template($("#template").html()),
+                        pageable: {
+                            buttonCount: 5,
+                            messages: {
+                                display: "Showing {0}-{1} from {2} data items"
+                            }
+                        }
+                    });
+                }
+                
+
+            }
+        });
+    }
+
+
+</script>

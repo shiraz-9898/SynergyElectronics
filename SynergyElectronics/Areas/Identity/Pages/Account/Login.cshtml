@@ -1,0 +1,104 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    .error {
+        color: red;
+    }
+
+    .c1 {
+        border: 2px solid red;
+    }
+
+    .login,
+    .image {
+        min-height: 50vh;
+    }
+
+    .bg-image {
+        background-image: url('https://bootstrapious.com/i/snippets/sn-page-split/bg.jpg');
+        background-size: cover;
+        background-position: center center;
+        border-radius: 20px 0 0 20px;
+    }
+
+    #loginBox {
+        margin-top: 10%;
+        height: 70vh;
+    }
+</style>
+
+<div id="loginBox">
+    @{
+        if (TempData["response"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible show w-75 mx-auto" role="alert">
+                <strong>Invalid</strong> @TempData["response"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    }
+
+
+    <div class="container">
+        <div class="row no-gutter">
+            <!-- The image half -->
+            <div class="col-md-6 d-none d-md-flex bg-image"></div>
+
+
+            <!-- The content half -->
+            <div class="col-md-6 bg-light">
+                <div class="login d-flex align-items-center py-5">
+
+                    <!-- Demo content-->
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-10 col-xl-7 mx-auto">
+                                <h3 class="display-4 mb-5">Login to continue....</h3>
+
+                                <form id="account" method="post">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                                    <div class="form-group mb-3">
+                                        <input asp-for="Input.Email" autocomplete="username" aria-required="true" placeholder="name@example.com" class="form-control rounded-pill border-0 shadow-sm px-4">
+                                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <input asp-for="Input.Password" autocomplete="current-password" aria-required="true" placeholder="password" class="form-control rounded-pill border-0 shadow-sm px-4 text-primary">
+                                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                    </div>
+                                    <div class="custom-control custom-checkbox mb-3">
+                                        <label asp-for="Input.RememberMe" class="form-label">
+                                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                        </label>
+                                    </div>
+                                    <button id="login-submit" type="submit" class="btn btn-primary btn-block text-uppercase mb-2 rounded-pill shadow-sm">Sign in</button>
+                                    <div class="text-center  justify-content-between mt-5">
+                                        <p>
+                                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                                        </p>
+                                        <p>
+                                            Don't have account? <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="font-italic text-muted">
+                                                <u>Register as a new user</u>
+                                            </a>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div><!-- End -->
+
+                </div>
+            </div><!-- End -->
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
