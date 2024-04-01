@@ -6,9 +6,11 @@
 
     #ag {
         height: 600px;
-        margin-top: 10px;
+        margin-top: 70px;
     }
-
+    #mainBody{
+        height: 80vh;
+    }
     
     .ag-center-cols-viewport {
         min-height: unset !important;
@@ -66,12 +68,14 @@
 </style>
 
 
-
-<div id="ag" class="container ag-theme-quartz-dark"></div>
-<div class="total">
-    <h3>Total Amount : Rs <strong id="amount"></strong></h3>
-    <button class="btn btn-primary">Proceed to Payment <span class="glyphicon glyphicon-menu-right"></span></button>
+<div id="mainBody">
+    <div id="ag" class="container ag-theme-quartz-dark"></div>
+    <div class="total">
+        <h3>Total Amount : Rs <strong id="amount">0</strong></h3>
+        <button class="btn btn-primary">Proceed to Payment <span class="glyphicon glyphicon-menu-right"></span></button>
+    </div>
 </div>
+
 
 <script>
     // var userId = { userId: @TempData["user"]};
@@ -170,8 +174,7 @@
     
     $.ajax({
         type: "Get",
-        url: "/OnlineShop/GetCartData/",
-        data: userId,
+        url: "/OnlineShop/GetCartData/", 
         success: function (data) {
             return gridApi.setGridOption('rowData', data);
         },
