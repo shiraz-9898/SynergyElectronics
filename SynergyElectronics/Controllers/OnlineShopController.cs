@@ -28,9 +28,31 @@ namespace SynergyElectronics.Controllers
         }
 
         //Contact us page
-        public IActionResult Checkout()
+        [Authorize]
+        public IActionResult Checkout(int prodId)
         {
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).FirstOrDefault(x => x.Prod_Id == prodId && x.User_Id == userId);
+            return View(data);
+        }
+        [Authorize]
+        public IActionResult PaymentPage(int? id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var prodData = _context.Products.FirstOrDefault(x => x.Prod_Id == id);
+            var userData = _context.Users.FirstOrDefault(x => x.Id == userId);
+            if (id != null)
+            {
+                var cartData = new Cart()
+                { Cart_Qty = 1, Cart_Price = prodData.Prod_Price, User_Id = userId, Users = userData, Prod_Id = (int)id, Products = prodData };
+                return View(cartData);
+            }
+
+            var cartData2 = new Cart()
+            { User_Id = userId, Users = userData };
+
+
+            return View(cartData2);
         }
         public IActionResult AllProducts()
         {

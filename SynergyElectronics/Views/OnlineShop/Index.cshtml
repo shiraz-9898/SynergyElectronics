@@ -189,7 +189,8 @@
                  <h6>#:prod_Name#</h6>
                  <h5>#:prod_Price#</h5>
              <a id="cart" class="btn btn-primary" onclick="AddToCart(#:prod_Id#)">Add to Cart</a>
-
+             @* <a id="buyNow" class="btn btn-warning ms-2" onclick="GoToPayment(#:prod_Id#)">Buy Now</a> *@
+             <a id="buyNow" class="btn btn-warning ms-2" href="/OnlineShop/PaymentPage/#:prod_Id#">Buy Now</a>
 
                  </div>
 
@@ -287,6 +288,22 @@
                 alert(status);
             },
             
+
+        });
+    }
+
+    //payment
+    function GoToPayment(prod_Id) {
+        var id = { prod_Id: prod_Id };
+        console.log(id);
+        $.ajax({
+            type: "POST",
+            url: `/OnlineShop/PaymentPage/`,
+            data: id,
+            success: function (status) {
+                alert(status);
+            },
+
 
         });
     }

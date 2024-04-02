@@ -1,4 +1,6 @@
-﻿<div class="card">
+﻿@model SynergyElectronics.Areas.Identity.Data.Cart
+
+<div class="card">
     <div class="card-body">
         <div class="container mb-5 mt-3">
             <div class="row d-flex align-items-baseline">
@@ -19,7 +21,7 @@
             <div class="container">
 
                 <div class="col-xl-2 offset-9">
-                    <p><span class="fw-bold text-muted">Invoice Date: </span><strong id="invoiceDate">Jun 23,2021</strong></p>
+                    <p><span class="fw-bold text-muted">Invoice Date: </span><strong id="invoiceDate">@DateTime.Now.Date</strong></p>
                 </div>
                 
 
@@ -41,10 +43,10 @@
                     </div>
                     <div class="col-xl-4">
                         <ul class="list-unstyled">
-                            <li class="text-muted">To: <span style="color:#5d9fc5 ;">John Lorem</span></li>
+                            <li class="text-muted">To: <span style="color:#5d9fc5 ;">@Model.Users.FullName</span></li>
                             <li class="text-muted">Street, City</li>
                             <li class="text-muted">State, Country</li>
-                            <li class="text-muted"><i class="fas fa-phone"></i> 123-456-789</li>
+                            <li class="text-muted"><i class="fas fa-phone"></i> +91 @Model.Users.PhoneNumber</li>
                         </ul>
                     </div>
                 </div>
@@ -54,7 +56,7 @@
                         <thead style="background-color:#84B0CA ;" class="text-white">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Description</th>
+                                <th scope="col">Products</th>
                                 <th scope="col">Qty</th>
                                 <th scope="col">Unit Price</th>
                                 <th scope="col">Amount</th>
@@ -63,25 +65,12 @@
                         <tbody>
                             <tr>
                                 <th scope="row">1</th>
-                                <td>Pro Package</td>
-                                <td>4</td>
-                                <td>$200</td>
-                                <td>$800</td>
+                                <td>@Model.Products.Prod_Name</td>
+                                <td>@Model.Cart_Qty</td>
+                                <td>@Model.Products.Prod_Price</td>
+                                <td>@Model.Cart_Price</td>
                             </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Web hosting</td>
-                                <td>1</td>
-                                <td>$10</td>
-                                <td>$10</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Consulting</td>
-                                <td>1 year</td>
-                                <td>$300</td>
-                                <td>$300</td>
-                            </tr>
+                            
                         </tbody>
 
                     </table>
