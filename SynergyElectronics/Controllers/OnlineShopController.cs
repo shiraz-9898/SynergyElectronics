@@ -43,16 +43,41 @@ namespace SynergyElectronics.Controllers
             var userData = _context.Users.FirstOrDefault(x => x.Id == userId);
             if (id != null)
             {
-                var cartData = new Cart()
-                { Cart_Qty = 1, Cart_Price = prodData.Prod_Price, User_Id = userId, Users = userData, Prod_Id = (int)id, Products = prodData };
-                return View(cartData);
+                var orderData = new Order()
+                { Qty = 1, User_Id = userId, Users = userData, Prod_Id = (int)id, Products = prodData };
+                return View(orderData);
             }
 
-            var cartData2 = new Cart()
+            var orderData2 = new Order()
             { User_Id = userId, Users = userData };
 
 
-            return View(cartData2);
+            return View(orderData2);
+        }
+
+        [HttpPost]
+        public IActionResult PaymentPage(Order order)
+        {
+            if (ModelState.IsValid)
+            {
+                var date = DateTime.Now;
+                order.Invoice_Id = "inv/"+date.Year + date.Month;
+            }
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //var prodData = _context.Products.FirstOrDefault(x => x.Prod_Id == id);
+            //var userData = _context.Users.FirstOrDefault(x => x.Id == userId);
+            //if (id != null)
+            //{
+            //    var orderData = new Order()
+            //    { Qty = 1, User_Id = userId, Users = userData, Prod_Id = (int)id, Products = prodData };
+            //    return View(orderData);
+            //}
+
+            //var orderData2 = new Order()
+            //{ User_Id = userId, Users = userData };
+
+
+            return View(order);
         }
         public IActionResult AllProducts()
         {
