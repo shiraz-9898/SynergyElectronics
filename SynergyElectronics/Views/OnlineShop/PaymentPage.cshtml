@@ -15,6 +15,14 @@
     #mainBody {
         margin: 50px 0 100px 0;
     }
+
+    .error {
+        color: red;
+    }
+
+    .c1 {
+        border: 1px solid red;
+    }
 </style>
 
 <div class="w-75 mx-auto" id="mainBody">
@@ -26,7 +34,7 @@
         <div class="col-md-4 order-md-2 mb-4">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-muted">Your cart</span>
-                <span class="badge badge-secondary badge-pill" id="cartCount">1</span>
+                <span class="badge badge-secondary badge-pill" id="cartCount">@Model.Qty</span>
             </h4>
             <ul class="list-group mb-3" id="cartList">
                 @if (Model.Prod_Id > 0)
@@ -41,29 +49,45 @@
                     </li>
                 }
 
+                
+                <li class="list-group-item d-flex justify-content-between" style="background-color:#84B0CA ;">
+                    <span>Sub Total</span>
+                    <div><strong>Rs.</strong><strong id="subTotal">0</strong></div>
+                </li>
 
-                <li class="list-group-item d-flex justify-content-between">
+                <li class="list-group-item d-flex justify-content-around lh-condensed" >
+                    <div class="col-md-6">
+                        <h6 class="my-0">Additional Charges</h6>
+                    </div>
+                    <p class="text-muted col-md-2">5%</p>
+                    <div class ="text-muted col-md-2"><span>Rs.</span><span id="charges">0</span></div>
+                </li>
+
+                <li class="list-group-item d-flex justify-content-between" style="background-color:lightgreen ;">
                     <span>Total (INR)</span>
-                    <strong id="totalPrice">Rs.0</strong>
+                    <div><strong>Rs.</strong><strong id="totalPrice">0</strong></div>
                 </li>
             </ul>
 
         </div>
         <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Billing address</h4>
-            <form asp-action="PaymentPage" method="post">
+            <form asp-action="PaymentPage" id="myForm" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <input asp-for="Prod_Id" type="hidden" class="form-control" />
+                <input asp-for="Price_Total" type="hidden" class="form-control" />
+                <input asp-for="Additional_Charges" type="hidden" class="form-control" />
                 <div class="row">
                     <div class="col-md-12 mb-3">
-                        <label asp-for="Users.FullName" class="form-label"></label>
-                        <input asp-for="Users.FullName" class="form-control" disabled />
+                        <label asp-for="Users.FullName" class="form-label">Fullname</label>
+                        <input asp-for="Users.FullName" class="form-control" />
                     </div>
 
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Users.UserName" class="form-label"></label>
-                    <input asp-for="Users.UserName" class="form-control" disabled>
+                    <label asp-for="Users.UserName" class="form-label">Username</label>
+                    <input asp-for="Users.UserName" class="form-control" readonly>
 
                 </div>
 
@@ -72,36 +96,47 @@
                     <input asp-for="Users.Email" class="form-control" readonly>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Users.Address" class="form-label"></label>
-                    <input asp-for="Users.Address" class="form-control" />
-                    <span asp-validation-for="Users.Address" class="text-danger"></span>
-                </div>
-
                 <div class="row">
-                    <div class="col-md-5 mb-3">
+                    <div class="col-md-4 mb-3">
                         <label asp-for="Users.Country" class="form-label"></label>
-                        <select class="form-control">
-                            <option value="">Choose...</option>
-                            <option value="india">India</option>
+                        <select asp-for="Users.Country" class="form-control">
+                            <option value="" disabled>Choose...</option>
+                            <option value="India">India</option>
                         </select>
-                        <span asp-validation-for="Users.Country" class="text-danger"></span>
                     </div>
                     <div class="col-md-4 mb-3">
                         <label asp-for="Users.State" class="form-label"></label>
-                        <select class="form-control">
-                            <option value="">Choose...</option>
-                            <option value="m.p">M.P</option>
-                            <option value="u.p">U.P</option>
-                            <option value="maharashtra">Maharashtra</option>
-                            <option value="delhi">Delhi</option>
+                        <select asp-for="Users.State" class="form-control">
+                            <option disabled>Choose...</option>
+                            <option value="M.P.">M.P</option>
+                            <option value="U.P.">U.P</option>
+                            <option value="Maharashtra">Maharashtra</option>
+                            <option value="Delhi">Delhi</option>
                         </select>
-                        <span asp-validation-for="Users.State" class="text-danger"></span>
+                    </div>                    
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="Users.City" class="form-label"></label>
+                        <select asp-for="Users.City" class="form-control">
+                            <option disabled>Choose...</option>
+                            <option value="Bhopal">Bhopal</option>
+                            <option value="Indore">Indore</option>
+                            <option value="Lucknow">Lucknow</option>
+                            <option value="Noida">Noida</option>
+                            <option value="Mumbai">Mumbai</option>
+                            <option value="Pune">Pune</option>
+                            <option value="Delhi">Delhi</option>
+                        </select>
                     </div>
+
+                    <div class="mb-3 col-md-9">
+                        <label asp-for="Users.Address" class="form-label"></label>
+                        <input asp-for="Users.Address" class="form-control" />
+                    </div>
+
                     <div class="col-md-3 mb-3">
-                        <label asp-for="Users.PinCode" class="form-label"></label>
-                        <input asp-for="Users.PinCode" class="form-control" placeholder="">
-                        <span asp-validation-for="Users.PinCode" class="text-danger"></span>
+                    <label asp-for="Users.PinCode" class="form-label">Pin code</label>
+                    <input asp-for="Users.PinCode" class="form-control" placeholder="">
                     </div>
                 </div>
                 <hr class="mb-4">
@@ -117,38 +152,34 @@
                         <input asp-for="Payment" type="radio" value="Debit card" class="custom-control-input" required>
                         <label class="custom-control-label" asp-for="Payment">Debit card</label>
                     </div>
-                    <div class="custom-control custom-radio">
+                    @* <div class="custom-control custom-radio">
                         <input asp-for="Payment" type="radio" value="Paypal" class="custom-control-input" required>
                         <label class="custom-control-label" asp-for="Payment">Paypal</label>
-                    </div>
+                    </div> *@
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label asp-for="Name_On_Card">Name on card</label>
                         <input asp-for="Name_On_Card" class="form-control" placeholder="" />
-                        <small class="text-muted">Full name as displayed on card</small>
-                        <span asp-validation-for="Name_On_Card" class="text-danger"></span>
+                        <small class="text-muted" id="displayName">Full name as displayed on card</small><br />
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label asp-for="Card_Num">Credit card number</label>
+                        <label asp-for="Card_Num">Card number</label>
                         <input asp-for="Card_Num" class="form-control" placeholder="xxxx-xxxx-xxxx" />
-                        <span asp-validation-for="Card_Num" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3 mb-3">
                         <label asp-for="Expiry">Expiration</label>
-                        <input asp-for="Expiry" class="form-control" placeholder="mm/yyyy" >
-                        <span asp-validation-for="Expiry" class="text-danger"></span>
+                        <input asp-for="Expiry" class="form-control" placeholder="mm/yyyy">
                     </div>
                     <div class="col-md-3 mb-3">
                         <label asp-for="CVV">CVV</label>
                         <input asp-for="CVV" class="form-control" placeholder="" />
-                        <span asp-validation-for="CVV" class="text-danger"></span>
                     </div>
                 </div>
                 <hr class="mb-4">
-                <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                <button class="btn btn-primary btn-lg btn-block" id="submitBtn" type="submit">Continue to checkout</button>
             </form>
         </div>
     </div>
@@ -157,15 +188,30 @@
 
 <script>
     $(document).ready(function () {
+
         var ul = $("#cartList");
         var cartCount = $("#cartCount");
 
-        if (ul.children().length == 1) {
+        //calling function to initialize cart list
+        initializeCart(ul, cartCount);
+
+
+        //calling function to validate data
+        toValidateData();
+
+    })
+</script>
+
+<script>
+    //functions
+
+    function initializeCart(ul, cartCount) {
+        if (ul.children().length <= 3) {
             $.ajax({
                 type: "Get",
                 url: "/OnlineShop/GetCartData/",
                 success: function (data) {
-                    var totalPrice = 0;
+                    var total = 0;
                     data.forEach(function (item) {
                         ul.prepend(`
                             <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -174,25 +220,146 @@
                                     <small class="text-muted">Brief description</small>
                                 </div>
                                 <p class="text-muted text-end col-md-1">${item.cart_Qty}</p>
-                                <span class="text-muted text-end col-md-3 price">Rs.${item.products.prod_Price}</span>
+                                <span class="text-muted text-end col-md-3">Rs.${item.products.prod_Price}</span>
                             </li>
                         `);
 
-                        totalPrice += item.cart_Price;
+                        total += item.cart_Price;
                     });
-                    cartCount.text(data.length);
-                    $("#totalPrice").text(`Rs.${totalPrice}`);
+                    var charges = ((total * 0.05).toFixed(2)) * 1;
+                    $("#subTotal").text(total);
+                    $("#charges").text(charges);
+                    $("#totalPrice").text(total + charges);
+                    $("#Price_Total").val(total + charges);
+                    $("#Additional_Charges").val(charges);
+                    $("#cartCount").text(data.length);
                 },
 
             });
 
         }
         else {
-            var price = $("#singlePrice").text();
-            $("#totalPrice").text(price);
+            var price = (($("#singlePrice").text()).slice(3)) * 1;
+            var charges = ((price * 0.05).toFixed(2))*1;
+            $("#subTotal").text(price);
+            $("#charges").text(charges);
+            $("#totalPrice").text(price + charges);
+            $("#Price_Total").val(price + charges);
+            $("#Additional_Charges").val(charges);
         }
+    }
 
-    })
+    //to validate data
+    function toValidateData(){
+        $.validator.addMethod("lettersonlys", function (value, element) {
+            return this.optional(element) || /^[a-zA-Z ]*$/.test(value);
+        }, "please enter valid name.")
+
+        $("#myForm").validate({
+
+            rules: {
+                "Users.FullName": {
+                    required: true,                   
+                },
+                
+                "Users.Address": {
+                    required: true,
+                },
+
+                "Users.Country": {
+                    required: true,
+                    selectMethod: true,
+                },
+
+                "Users.State": {
+                    required: true,
+                    selectMethod: true,
+                },
+
+                "Users.PinCode": {
+                    required: true,
+                    digits: true,
+                },
+                Name_On_Card: {
+                    required: true,
+                    lettersonlys: true,
+                },
+                Card_Num: {
+                    required: true,
+                    digits: true,
+                    maxlength: 12,
+                    minlength: 12,
+                },
+                Expiry: {
+                    required: true,
+                },
+                CVV: {
+                    required: true,
+                    maxlength: 3,
+                    minlength: 3,
+                    digits: true,
+                },
+
+            },
+
+            highlight: function (element) {
+                var name = $(element).attr("name");
+                $(element).addClass("c1");
+
+                if (name == "Name_On_Card") {
+                    $("#displayName").addClass("hide");
+                }
+            },
+            unhighlight: function (element) {
+                var name = $(element).attr("name");
+                $(element).removeClass("c1");
+
+                if (name == "Name_On_Card") {
+                    $("#displayName").addClass("text-muted");
+                }
+            },
+
+            messages: {
+                "Users.FullName": {
+                    required: "Fullname is required.",
+                },
+                "Users.Address": {
+                    required: "Address is required.",
+                },
+                "Users.Country": {
+                    required: "Address is required.",
+                    selectMethod: "Country is required.",
+                },
+                "Users.State": {
+                    required: "Address is required.",
+                    selectMethod: "State is required."
+                },
+                "Users.PinCode": {
+                    required: "PinCode is required.",
+                    digits: "Please enter digits only."
+                },
+                Name_On_Card: {
+                    required: "Please enter name as displayed on Card.",
+                },
+                Card_Num: {
+                    required: "Please enter Card Number.",
+                    digits: "Please enter valid numbers.",
+                    maxlength: "it takes 12 digits only.",
+                    minlength: "it takes 12 digits only.",
+                },
+                Expiry: {
+                    required: "Expiration month/year required.",
+                },
+                CVV: {
+                    required: "CVV is required.",
+                    digits: "Please enter valid numbers.",
+                    maxlength: "it takes 3 digits only.",
+                    minlength: "it takes 3 digits only.",
+                },
+            }
+        })
+    }
+
 </script>
 
 @section Scripts {

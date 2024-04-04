@@ -1,11 +1,11 @@
-﻿@model SynergyElectronics.Areas.Identity.Data.Cart
+﻿@model IEnumerable<SynergyElectronics.Areas.Identity.Data.Order>
 
 <div class="card">
     <div class="card-body">
-        <div class="container mb-5 mt-3">
+        <div class="container mb-5 mt-3 p-3">
             <div class="row d-flex align-items-baseline">
                 <div class="col-xl-9">
-                    <p style="color: #7e8d9f;font-size: 20px;">Invoice >> <strong>ID: #123-123</strong></p>
+                    <p style="color: #7e8d9f;font-size: 20px;">Invoice >> <strong>ID: @Model.ElementAt(0).Invoice_Id</strong></p>
                 </div>
                 <div class="col-xl-3 float-end">
                     <a class="btn btn-light text-capitalize border-0" data-mdb-ripple-color="dark">
@@ -15,13 +15,13 @@
                         <i class="far fa-file-pdf text-danger"></i> Export
                     </a>
                 </div>
-                <hr>
+                <hr />
             </div>
 
             <div class="container">
 
                 <div class="col-xl-2 offset-9">
-                    <p><span class="fw-bold text-muted">Invoice Date: </span><strong id="invoiceDate">@DateTime.Now.Date</strong></p>
+                    <p><span class="fw-bold text-muted">Invoice Date: </span><strong id="invoiceDate">@Model.ElementAt(0).Created_Date</strong></p>
                 </div>
                 
 
@@ -43,15 +43,15 @@
                     </div>
                     <div class="col-xl-4">
                         <ul class="list-unstyled">
-                            <li class="text-muted">To: <span style="color:#5d9fc5 ;">@Model.Users.FullName</span></li>
-                            <li class="text-muted">Street, City</li>
-                            <li class="text-muted">State, Country</li>
-                            <li class="text-muted"><i class="fas fa-phone"></i> +91 @Model.Users.PhoneNumber</li>
+                            <li class="text-muted">To: <span style="color:#5d9fc5 ;">@Model.ElementAt(0).Users.FullName</span></li>
+                            <li class="text-muted">@Model.ElementAt(0).Users.Address, @Model.ElementAt(0).Users.City</li>
+                            <li class="text-muted">@Model.ElementAt(0).Users.State, @Model.ElementAt(0).Users.Country</li>
+                            <li class="text-muted"><i class="fas fa-phone"></i> +91 @Model.ElementAt(0).Users.PhoneNumber</li>
                         </ul>
                     </div>
                 </div>
 
-                <div class="row my-2 mx-1 justify-content-center">
+                <div class="row my-2 justify-content-center">
                     <table class="table table-striped table-borderless">
                         <thead style="background-color:#84B0CA ;" class="text-white">
                             <tr>
@@ -63,30 +63,56 @@
                             </tr>
                         </thead>
                         <tbody>
+                        @{
+                            var row = 1;
+
+                            foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <th scope="row">@row</th>
+                                    <td>@item.Products.Prod_Name</td>
+                                    <td>@item.Qty</td>
+                                    <td>@item.Products.Prod_Price</td>
+                                    <td>@(item.Qty * item.Products.Prod_Price)</td>
+                                </tr>
+                                row = row + 1;
+                            }
+                        }
                             <tr>
-                                <th scope="row">1</th>
-                                <td>@Model.Products.Prod_Name</td>
-                                <td>@Model.Cart_Qty</td>
-                                <td>@Model.Products.Prod_Price</td>
-                                <td>@Model.Cart_Price</td>
-                            </tr>
+                                <th scope="row"></th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>                          
                             
                         </tbody>
 
                     </table>
                 </div>
-                <div class="row">
+                <div class="row mt-3">
                     <div class="col-xl-8">
-                        <p class="ms-3">Add additional notes and payment information</p>
+                        <p class="ms-2">*Transaction of payment details.</p>
+                        <dl class="row">
+                            <dt class="col-md-3">Payment Mode:</dt>
+                            <dd class="col-md-9">@Model.ElementAt(0).Payment</dd>
+
+                            <dt class="col-md-3">Card Holder's Name:</dt>
+                            <dd class="col-md-9">@Model.ElementAt(0).Name_On_Card.ToUpper()</dd>
+
+                            <dt class="col-md-3">Card Number:</dt>
+                            <dd class="col-md-9">XXXX-XXXX-@Model.ElementAt(0).Card_Num.Substring(8)</dd>
+                        </dl>
 
                     </div>
-                    <div class="col-xl-3">
+                    <div class="col-xl-3 mt-2">
                         <ul class="list-unstyled">
-                            <li class="text-muted ms-3"><span class="text-black me-4">SubTotal</span>$1110</li>
-                            <li class="text-muted ms-3 mt-2"><span class="text-black me-4">Tax(15%)</span>$111</li>
+                            <li class="text-muted ms-3"><span class="text-black me-4">SubTotal:</span>Rs.@(Model.ElementAt(0).Price_Total - Model.ElementAt(0).Additional_Charges)</li>
+                            <li class="text-muted ms-3 mt-2"><span class="text-black me-4">Additional Charges(5%):</span>Rs.@Model.ElementAt(0).Additional_Charges</li>
                         </ul>
-                        <p class="text-black float-start">
-                            <span class="text-black me-3"> Total Amount</span><span style="font-size: 25px;">$1221</span>
+                        <p class="text-black float-start p-2 rounded-3" style="background-color:lightgreen ;">
+                            <span class="text-black me-3" style="font-size: 18px;"> Total Amount:</span><span style="font-size: 19px;">Rs.@Model.ElementAt(0).Price_Total</span>
                         </p>
                     </div>
                 </div>
@@ -95,12 +121,12 @@
                     <div class="col-xl-10">
                         <p>Thank you for your purchase</p>
                     </div>
-                    <div class="col-xl-2">
+                    @* <div class="col-xl-2">
                         <button type="button" class="btn btn-primary text-capitalize"
                                 style="background-color:#60bdf3 ;">
                             Pay Now
                         </button>
-                    </div>
+                    </div> *@
                 </div>
 
             </div>

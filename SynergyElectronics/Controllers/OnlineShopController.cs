@@ -17,7 +17,7 @@ namespace SynergyElectronics.Controllers
 
         //Homepage
         public IActionResult Index()
-        {           
+        {
             return View();
         }
 
@@ -29,10 +29,9 @@ namespace SynergyElectronics.Controllers
 
         //Contact us page
         [Authorize]
-        public IActionResult Checkout(int prodId)
+        public IActionResult Checkout(string? id)
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).FirstOrDefault(x => x.Prod_Id == prodId && x.User_Id == userId);
+            var data = _context.Orders.Include(c => c.Users).Include(c => c.Products).Where(x => x.Invoice_Id == id).ToList();
             return View(data);
         }
         [Authorize]
@@ -58,11 +57,51 @@ namespace SynergyElectronics.Controllers
         [HttpPost]
         public IActionResult PaymentPage(Order order)
         {
-            if (ModelState.IsValid)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var date = DateTime.Now;
+            order.Invoice_Id = "INV-0b" + date.Year + "-2c" + date.Month + "-4e" + date.Day + "-3a" + date.Hour + "-1d" + date.Minute;
+            order.Id = 0;
+            order.Created_Date = date.ToString("MMMM/dd/yyyy");
+            order.User_Id = userId;
+            order.Qty = 1;
+
+            var userData = _context.Users.FirstOrDefault(c => c.Id == userId);
+            
+            userData.FullName = order.Users.FullName;
+            userData.Address = order.Users.Address;
+            userData.Country = order.Users.Country;
+            userData.State = order.Users.State;
+            userData.City = order.Users.City;
+            userData.PinCode = order.Users.PinCode;
+
+            _context.Users.Update(userData);
+            _context.SaveChanges();
+
+            order.Users = null;
+
+            if (order.Prod_Id > 0)
             {
-                var date = DateTime.Now;
-                order.Invoice_Id = "inv/"+date.Year + date.Month;
+                _context.Orders.Update(order);
+                _context.SaveChanges();
             }
+            else
+            {
+                var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == userId).ToList();
+                foreach(var item in data)
+                {
+                    order.Id = 0;
+                    order.Prod_Id = item.Prod_Id;
+                    order.Qty = item.Cart_Qty;
+                    _context.Orders.Add(order);
+                    _context.SaveChanges();
+
+                    _context.Remove(item);
+                    _context.SaveChanges();
+
+                }
+                
+            }
+
             //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             //var prodData = _context.Products.FirstOrDefault(x => x.Prod_Id == id);
             //var userData = _context.Users.FirstOrDefault(x => x.Id == userId);
@@ -77,7 +116,7 @@ namespace SynergyElectronics.Controllers
             //{ User_Id = userId, Users = userData };
 
 
-            return View(order);
+            return RedirectToAction("Checkout", new { id = order.Invoice_Id });
         }
         public IActionResult AllProducts()
         {
@@ -160,7 +199,7 @@ namespace SynergyElectronics.Controllers
                     }
                 }
                 return Json("ok");
-            }           
+            }
             return NoContent();
         }
 

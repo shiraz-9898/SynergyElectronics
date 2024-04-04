@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SynergyElectronics.Areas.Identity.Data;
@@ -11,9 +12,11 @@ using SynergyElectronics.Areas.Identity.Data;
 namespace SynergyElectronics.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240403051429_workingOnCVV")]
+    partial class workingOnCVV
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,9 +275,6 @@ namespace SynergyElectronics.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("isSelected")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Cart_Id");
 
                     b.HasIndex("Prod_Id");
@@ -307,10 +307,6 @@ namespace SynergyElectronics.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Additional_Charges")
-                        .HasColumnType("numeric(10,2)")
-                        .HasColumnName("Additional_Charges");
 
                     b.Property<string>("CVV")
                         .IsRequired()

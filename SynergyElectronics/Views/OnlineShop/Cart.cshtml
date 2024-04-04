@@ -79,7 +79,10 @@
 
 <script>
     // var userId = { userId: @TempData["user"]};
-    var userId = { userId: 2};
+
+
+
+    
     const gridOptions = {
 
         
@@ -102,9 +105,12 @@
             //     editable: false,
             // },
             {
-                field: "products.prod_Name", headerName: "Item", width: "680", checkboxSelection: true,
+                field: "products.prod_Name", headerName: "Item", width: "800", checkboxSelection: true,
                 headerCheckboxSelection: true,
             },
+            // {
+            //     field: "isSelected", headerName: "", width: "50", editable: true, 
+            // },
             { field: "cart_Price", headerName: "Amount", width: "150", valueFormatter: function (params) { return "Rs. " + params.value.toLocaleString(); } },
             {
                 field: "cart_Qty",
@@ -119,12 +125,12 @@
             },
             {
                 headerName: "Action",
+                width: "90",
                 cellRenderer: function (x) {
                     var data = x.data;                    
-                    return `<button class="btn btn-warning" onclick = "deleteData(${data.cart_Id})">Buy Now</button> 
-                    &nbsp<button class="btn btn-danger" onclick = "deleteData(${data.cart_Id})"><span class="glyphicon glyphicon-trash"></span></button>`
+                    return `<button class="btn btn-danger" onclick = "deleteData(${data.cart_Id})"><span class="glyphicon glyphicon-trash"></span></button>`
                 },
-               
+                   // < a id = "buyNow" class= "btn btn-warning" href = "/OnlineShop/PaymentPage/${data.prod_Id}" > Buy Now < /a>
                 //editable: false,
             },
         ],
@@ -176,6 +182,13 @@
         type: "Get",
         url: "/OnlineShop/GetCartData/", 
         success: function (data) {
+            // var total = 0;
+            // data.forEach(function (item) {
+            //     if (item.isSelected == true) {
+            //         total += item.cart_Price;
+            //     }                                
+            // })
+            // $("#amount").text(total);
             return gridApi.setGridOption('rowData', data);
         },
         error: function (data) {

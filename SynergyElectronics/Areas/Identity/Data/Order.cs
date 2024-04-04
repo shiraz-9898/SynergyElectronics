@@ -16,11 +16,13 @@ namespace SynergyElectronics.Areas.Identity.Data
         [Required]
         public string Expiry { get; set; }
         [Required]
-        public int CVV { get; set; }
+        public string CVV { get; set; }
         public int Qty { get; set;}
         
         [Column("Price_Total", TypeName = "numeric(10,2)")]
         public decimal Price_Total { get; set; }
+        [Column("Additional_Charges", TypeName = "numeric(10,2)")]
+        public decimal Additional_Charges { get; set; }
         public string? Created_Date { get; set; }
 
         [ForeignKey("Users")]

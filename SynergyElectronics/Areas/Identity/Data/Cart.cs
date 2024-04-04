@@ -7,6 +7,7 @@ namespace SynergyElectronics.Areas.Identity.Data
     {
         [Key]
         public int Cart_Id { get; set; }
+        public bool isSelected { get; set; } = false;
         public int Cart_Qty { get; set; }
         [Column("Cart_Price", TypeName = "numeric(10,2)")]
         public double Cart_Price { get; set; }
