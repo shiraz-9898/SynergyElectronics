@@ -72,8 +72,7 @@
         </div>
         <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Billing address</h4>
-            <form asp-action="PaymentPage" id="myForm" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <form asp-action="PaymentPage" method="post">
                 <input asp-for="Prod_Id" type="hidden" class="form-control" />
                 <input asp-for="Price_Total" type="hidden" class="form-control" />
                 <input asp-for="Additional_Charges" type="hidden" class="form-control" />
@@ -212,27 +211,32 @@
                 url: "/OnlineShop/GetCartData/",
                 success: function (data) {
                     var total = 0;
+                    var count = 0;
                     data.forEach(function (item) {
-                        ul.prepend(`
-                            <li class="list-group-item d-flex justify-content-between lh-condensed">
-                                <div class="col-md-8">
-                                    <h6 class="my-0">${item.products.prod_Name}</h6>
-                                    <small class="text-muted">Brief description</small>
-                                </div>
-                                <p class="text-muted text-end col-md-1">${item.cart_Qty}</p>
-                                <span class="text-muted text-end col-md-3">Rs.${item.products.prod_Price}</span>
-                            </li>
-                        `);
+                        if (item.isSelected) {
+                            ul.prepend(`
+                                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <div class="col-md-8">
+                                        <h6 class="my-0">${item.products.prod_Name}</h6>
+                                        <small class="text-muted">Brief description</small>
+                                    </div>
+                                    <p class="text-muted text-end col-md-1">${item.cart_Qty}</p>
+                                    <span class="text-muted text-end col-md-3">Rs.${item.cart_Price}</span>
+                                </li>
+                            `);
 
-                        total += item.cart_Price;
+                            total += item.cart_Price;
+                            count += 1;
+                        }
+                       
                     });
                     var charges = ((total * 0.05).toFixed(2)) * 1;
-                    $("#subTotal").text(total);
-                    $("#charges").text(charges);
-                    $("#totalPrice").text(total + charges);
+                    $("#subTotal").text(total.toLocaleString());
+                    $("#charges").text(charges.toLocaleString());
+                    $("#totalPrice").text((total + charges).toLocaleString());
                     $("#Price_Total").val(total + charges);
                     $("#Additional_Charges").val(charges);
-                    $("#cartCount").text(data.length);
+                    $("#cartCount").text(count);
                 },
 
             });
@@ -241,9 +245,9 @@
         else {
             var price = (($("#singlePrice").text()).slice(3)) * 1;
             var charges = ((price * 0.05).toFixed(2))*1;
-            $("#subTotal").text(price);
-            $("#charges").text(charges);
-            $("#totalPrice").text(price + charges);
+            $("#subTotal").text(price.toLocaleString());
+            $("#charges").text(charges.toLocaleString());
+            $("#totalPrice").text((price + charges).toLocaleString());
             $("#Price_Total").val(price + charges);
             $("#Additional_Charges").val(charges);
         }

@@ -54,13 +54,14 @@
         background-color: darkslateblue;
         border-radius: 10px;
         margin-top: 20px;
-        padding: 10px 15px;
+        padding: 5px 10px;
     }
     .box {
         border: 1px solid #ddd;
         border-radius: 10px;
         display: flex;
         margin: 10px;
+        transition: all 0.3s ease;
     }
 
     #prodImg {
@@ -78,11 +79,18 @@
         }
 
     .box:hover {
-        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
+        /* box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5); */
+        box-shadow: 0 0 10px 3px darkslateblue;
     }
 
     #details {
         padding: 10px 20px;
+        display: inline-flex;
+        flex-direction:column;
+        align-items: flex-start;
+        justify-content: space-evenly;
+
+
     }
     .show{
         display: block;
@@ -107,9 +115,10 @@
 </div>
 
 <div id="mainBody" class="container">
-    <p class="hide" id="searchPara">You have searched for: <strong id="searchInfo">@TempData["dataArray"]</strong></p>
+    <p class="hide" id="searchPara">You have searched for: <strong id="getSearch">@TempData["dataArray"]</strong></p>
+    <p class="hide" id="searchPara2">Showing result for: <strong id="setSearch"></strong></p>
     <p id="categoryId" class="d-none">@TempData["catId"]</p>
-    <div class="categoryBox">
+    <div class="categoryBox" id="mainBox">
         <div id="itemsList" class="rounded-3 mt-2"></div>
         <script type="text/x-kendo-tmpl" id="template">
             <div class="box">
@@ -117,9 +126,14 @@
                     <img src=#:prod_Img# />
                 </div>
                 <div id="details">
+                    <div>
                     <h4>#:prod_Name#</h4>
                     <h5><strong>Rs.#:prod_Price#</strong></h5>
+                    </div>
+                    <div>
+                    <a id="buyNow" class="btn btn-warning ms-2" href="/OnlineShop/PaymentPage/#:prod_Id#">Buy Now</a>
                     <a id="cart" class="btn btn-primary" onclick="AddToCart(#:prod_Id#)">Add to Cart</a>
+                    </div>
                 </div>
             </div>
         </script>
@@ -134,7 +148,7 @@
 
 <script>
     $(document).ready(function () {
-        var data = $("#searchInfo").text();
+        var data = $("#getSearch").text();
         var catId = $("#categoryId").text();
         getAllProducts(data, catId);
 
@@ -146,36 +160,48 @@
     function getAllProducts(searchedItem, catId) {
         if (searchedItem.length > 0) {
             $("#searchPara").addClass("show");
+            $("#searchPara2").addClass("show");
             var seaItem = searchedItem.toLowerCase();
             var itemsList = seaItem.split(" ");
         }
        
+        var searchResult = "";
 
         $.ajax({
             url: "/OnlineShop/AllProducts",
             success: function (data) {
                 var products = data.filter(function (item) {
-                    return (item.prod_Name.toLowerCase().includes(seaItem) || item.subCategories.subCategory_Name.toLowerCase().includes(seaItem) || item.subCategories.subCategory_Id == catId);
-                })
+                    return (item.prod_Name.toLowerCase().includes(seaItem) || item.subCategories.subCategory_Name.toLowerCase().includes(seaItem) || item.subCategories.category_Id == catId);
+                })              
 
-                // if (products.length < 1) {
-                //     products = data.filter(function (item) {
-                //         var res = null;
+                if (products.length < 1) {
+                    products = data.filter(function (item) {
+                        var res = null;
 
-                //         itemsList.forEach(function (value) {
-                //             if (item.prod_Name.toLowerCase().includes(value) || item.subCategories.subCategory_Name.toLowerCase().includes(value) || item.subCategories.category_Id == catId) {
+                        itemsList.forEach(function (value) {
 
-                //                 res = item;
-                //             }
-                //         })
-                //         if (res != null) {
-                //             return res;
-                //         }
-                //     })
-                // }
+                            if (item.prod_Name.toLowerCase().includes(value) || item.subCategories.subCategory_Name.toLowerCase().includes(value) || item.subCategories.category_Id == catId) {
+
+                                res = item;
+                                if (!searchResult.includes(value)) {
+                                    searchResult += " + " + " \"" + value + "\" ";
+                                }
+
+                            }
+                        })
+                        if (res != null) {
+                            return res;
+                        }
+                    })
+                    $("#setSearch").text(searchResult.slice(2));
+                }
+                else {
+                    $("#setSearch").text(`"${seaItem}"`);
+                }
 
                 if (products.length < 1) {
                     $("#isResFound").addClass("show text-center");
+                    $("#mainBox").addClass("hide");
                 }
                 else {
                     console.log(products.length);
@@ -197,7 +223,7 @@
                     });
                 }
                 
-
+                
             }
         });
     }

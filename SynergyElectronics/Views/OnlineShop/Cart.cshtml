@@ -72,45 +72,24 @@
     <div id="ag" class="container ag-theme-quartz-dark"></div>
     <div class="total">
         <h3>Total Amount : Rs <strong id="amount">0</strong></h3>
-        <a class="btn btn-primary" asp-action="PaymentPage">Proceed to Payment <span class="glyphicon glyphicon-menu-right"></span></a>
+        <a class="btn btn-primary" asp-action="PaymentPage" id="payBtn">Proceed to Payment <span class="glyphicon glyphicon-menu-right"></span></a>
     </div>
 </div>
 
 
 <script>
-    // var userId = { userId: @TempData["user"]};
-
-
-
     
     const gridOptions = {
-
-        
         defaultColDef: {
-            // filter: true,
-            // width: "317px",
-            // floatingFilter: true,
-            // editable: true,
-            
         },
 
-        columnDefs: [
-            // {
-            //     headerName: "Product Img",
-            //     cellRenderer: function (x) {
-            //         var data = x.data.products;
-                   
-            //         return `<img src="${data.prod_Img}" height="100" width="100" />`
-            //     },
-            //     editable: false,
-            // },
+        columnDefs: [            
             {
-                field: "products.prod_Name", headerName: "Item", width: "800", checkboxSelection: true,
-                headerCheckboxSelection: true,
+                field: "isSelected", headerName: "", width: "20", editable: true, 
             },
-            // {
-            //     field: "isSelected", headerName: "", width: "50", editable: true, 
-            // },
+            {
+                field: "products.prod_Name", headerName: "Product", width: "750", 
+            },
             { field: "cart_Price", headerName: "Amount", width: "150", valueFormatter: function (params) { return "Rs. " + params.value.toLocaleString(); } },
             {
                 field: "cart_Qty",
@@ -130,23 +109,11 @@
                     var data = x.data;                    
                     return `<button class="btn btn-danger" onclick = "deleteData(${data.cart_Id})"><span class="glyphicon glyphicon-trash"></span></button>`
                 },
-                   // < a id = "buyNow" class= "btn btn-warning" href = "/OnlineShop/PaymentPage/${data.prod_Id}" > Buy Now < /a>
-                //editable: false,
             },
         ],
 
         rowSelection: 'multiple',
-        // onRowSelected: function (event) {
-        //     console.log(event.data.cart_Price);
-        // },
-        onSelectionChanged: function (event) {
-            var total = 0;
-            event.api.getSelectedNodes().forEach(function (item) {
-                total += item.data.cart_Price;
-            })
-            $("#amount").text(total);
-        },
-
+        
         onCellValueChanged: (event) => {
             // fetch(`/OnlineShop/Edit/`, {
             //     method: "POST",
@@ -155,12 +122,19 @@
             //     },
             //     body: JSON.stringify(event.data),
             // })
-            console.log("hello");
+
             $.ajax({
                 type: "POST",
                 url: "/OnlineShop/Edit/",
                 data: event.data,
                 success: function (data) {
+                    var total = 0;
+                    data.forEach(function (item) {                        
+                        if (item.isSelected) {
+                            total += item.cart_Price;
+                        }                        
+                    });
+                    $("#amount").text(total.toLocaleString());
                     return gridApi.setGridOption('rowData', data);
                 },
                 error: function (data) {
@@ -173,22 +147,17 @@
     const AG = document.querySelector("#ag");
     const gridApi = agGrid.createGrid(AG, gridOptions);
     
-    // fetch(`/OnlineShop/GetCartData/${@TempData["user"]}`, { method: "POST" })
-    //     .then((response) => response.json())
-    //     .then((data) => gridApi.setGridOption('rowData', data));
-
-    
     $.ajax({
         type: "Get",
         url: "/OnlineShop/GetCartData/", 
-        success: function (data) {
-            // var total = 0;
-            // data.forEach(function (item) {
-            //     if (item.isSelected == true) {
-            //         total += item.cart_Price;
-            //     }                                
-            // })
-            // $("#amount").text(total);
+        success: function (data) {         
+            var total = 0;
+            data.forEach(function (item) {
+                if (item.isSelected) {
+                    total += item.cart_Price;
+                }
+            });
+            $("#amount").text(total.toLocaleString());
             return gridApi.setGridOption('rowData', data);
         },
         error: function (data) {
@@ -199,8 +168,38 @@
     function deleteData(id) {
         fetch(`/OnlineShop/Delete/${id}`, { method: "POST" })
             .then((response) => response.json())
-            .then((data) => gridApi.setGridOption('rowData', data));
+            .then(function (data) {
+                var total = 0;
+                data.forEach(function (item) {
+                    if (item.isSelected) {
+                        total += item.cart_Price;
+                    }
+                });
+                $("#amount").text(total.toLocaleString());
+                return gridApi.setGridOption('rowData', data);
+            });
 
     }
+
+    $("#payBtn").on("click", function (e) {
+        // e.preventDefault();
+        var dataObject = gridApi.rowModel.nodeManager.allNodesMap;
+        console.log(dataObject);
+        var flag = true;
+
+        for (var item in dataObject) {
+            if (dataObject[item].data.isSelected) {
+                flag = false;
+            }
+        }
+        console.log(flag);
+        if (flag) {
+            console.log("flag");
+            e.preventDefault();
+            alert("Please select atleast one product to proceed to payment.");
+        }
+        console.log("after if");
+        
+    })
 
 </script>

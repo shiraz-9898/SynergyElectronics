@@ -69,13 +69,13 @@
                             foreach (var item in Model)
                             {
 
-                                <tr>
-                                    <th scope="row">@row</th>
-                                    <td>@item.Products.Prod_Name</td>
-                                    <td>@item.Qty</td>
-                                    <td>@item.Products.Prod_Price</td>
-                                    <td>@(item.Qty * item.Products.Prod_Price)</td>
-                                </tr>
+                                    <tr>
+                                        <th scope="row">@row</th>
+                                        <td>@item.Products.Prod_Name</td>
+                                        <td>@item.Qty</td>
+                                        <td>@item.Products.Prod_Price</td>
+                                        <td>@(item.Qty * item.Products.Prod_Price)</td>
+                                    </tr>
                                 row = row + 1;
                             }
                         }
@@ -112,7 +112,7 @@
                             <li class="text-muted ms-3 mt-2"><span class="text-black me-4">Additional Charges(5%):</span>Rs.@Model.ElementAt(0).Additional_Charges</li>
                         </ul>
                         <p class="text-black float-start p-2 rounded-3" style="background-color:lightgreen ;">
-                            <span class="text-black me-3" style="font-size: 18px;"> Total Amount:</span><span style="font-size: 19px;">Rs.@Model.ElementAt(0).Price_Total</span>
+                            <span class="text-black me-3" style="font-size: 18px;"> Total Amount: Rs.</span><span style="font-size: 19px;" id="total">@Model.ElementAt(0).Price_Total</span>
                         </p>
                     </div>
                 </div>
@@ -133,3 +133,8 @@
         </div>
     </div>
 </div>
+<script>
+    $(doucment).ready(function () {
+        
+    })
+</script>

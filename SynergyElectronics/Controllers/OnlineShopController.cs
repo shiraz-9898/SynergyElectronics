@@ -89,38 +89,26 @@ namespace SynergyElectronics.Controllers
                 var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == userId).ToList();
                 foreach(var item in data)
                 {
-                    order.Id = 0;
-                    order.Prod_Id = item.Prod_Id;
-                    order.Qty = item.Cart_Qty;
-                    _context.Orders.Add(order);
-                    _context.SaveChanges();
+                    if (item.isSelected)
+                    {
+                        order.Id = 0;
+                        order.Prod_Id = item.Prod_Id;
+                        order.Qty = item.Cart_Qty;
+                        _context.Orders.Add(order);
+                        _context.SaveChanges();
 
-                    _context.Remove(item);
-                    _context.SaveChanges();
-
+                        _context.Remove(item);
+                        _context.SaveChanges();
+                    }
                 }
                 
             }
-
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            //var prodData = _context.Products.FirstOrDefault(x => x.Prod_Id == id);
-            //var userData = _context.Users.FirstOrDefault(x => x.Id == userId);
-            //if (id != null)
-            //{
-            //    var orderData = new Order()
-            //    { Qty = 1, User_Id = userId, Users = userData, Prod_Id = (int)id, Products = prodData };
-            //    return View(orderData);
-            //}
-
-            //var orderData2 = new Order()
-            //{ User_Id = userId, Users = userData };
-
 
             return RedirectToAction("Checkout", new { id = order.Invoice_Id });
         }
         public IActionResult AllProducts()
         {
-            var products = _context.Products.Include(p => p.SubCategories).Include(s => s.SubCategories.Categories);
+            var products = _context.Products.Include(p => p.SubCategories).Include(s => s.SubCategories.Categories).OrderBy(x => x.Prod_Id);
 
             return Json(products.ToList());
         }
@@ -156,7 +144,7 @@ namespace SynergyElectronics.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId != null)
             {
-                var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == userId).ToList();
+                var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == userId).OrderBy(x => x.Cart_Id).ToList();
                 return Json(data);
             }
             return Json("no data");
@@ -209,7 +197,7 @@ namespace SynergyElectronics.Controllers
             carts.Cart_Price = carts.Products.Prod_Price * carts.Cart_Qty;
             _context.Carts.Update(carts);
             _context.SaveChanges();
-            var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == carts.User_Id).ToList();
+            var data = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == carts.User_Id).OrderBy(x => x.Cart_Id).ToList();
             return Json(data);
         }
         [HttpPost]
@@ -222,7 +210,7 @@ namespace SynergyElectronics.Controllers
                 _context.Carts.Remove(data);
                 _context.SaveChanges();
             }
-            var response = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == userId).ToList();
+            var response = _context.Carts.Include(c => c.Users).Include(c => c.Products).Where(x => x.User_Id == userId).OrderBy(x => x.Cart_Id).ToList();
             return Json(response);
         }
     }
