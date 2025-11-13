@@ -1,9 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Amazon.SimpleNotificationService.Model;
+using Amazon.SimpleNotificationService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using SynergyElectronics.Areas.Identity.Data;
+using System.Drawing;
 using System.Security.Claims;
+using Azure;
+using Microsoft.AspNetCore.Routing;
+using System.Net;
 
 namespace SynergyElectronics.Controllers
 {
@@ -152,7 +158,7 @@ namespace SynergyElectronics.Controllers
 
         //add item to cart
         [Authorize]
-        public IActionResult AddCart(int prod_Id)
+        public async Task<IActionResult> AddCart(int prod_Id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -186,7 +192,24 @@ namespace SynergyElectronics.Controllers
                         _context.SaveChanges();
                     }
                 }
-                return Json("ok");
+                try
+                {
+                    var snsClient = new AmazonSimpleNotificationServiceClient(Amazon.RegionEndpoint.APSouth1);
+
+                    var request = new PublishRequest
+                    {
+                        PhoneNumber = "+916261663791", // Replace with the recipient's phone number
+                        //TopicArn = "arn:aws:sns:ap-south-1:6261663791:ExampleSNSTopic",
+                        Message = "Hello from AWS SNS!"
+                    };
+
+                    var response = await snsClient.PublishAsync(request);
+                    return Json(response.MessageId);
+                }
+                catch (Exception e)
+                {
+                    return Json(e.Message);
+                }
             }
             return NoContent();
         }
