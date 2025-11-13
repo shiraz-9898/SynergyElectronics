@@ -10,12 +10,11 @@
         /* background-image: linear-gradient( rgba(0,0,0,0.5), url(https://mobirise.com/extensions/digitalm4/assets/images/background5.jpg)); */
         background: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), url(https://mobirise.com/extensions/digitalm4/assets/images/background5.jpg);
         background-repeat: no-repeat;
-        background-size: cover;        
+        background-size: cover;
     }
 
     #startPage {
-        height: 75vh;
-        /* margin-bottom: 18.5%; */
+        height: 100vh;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -111,7 +110,7 @@
         }
 
     .box:hover {
-        box-shadow: 5px 3px 10px 5px grey /* rgba(0, 140, 186, 0.5) */;
+        box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
     }
 
     #details {
@@ -182,8 +181,6 @@
         <a class="btn btn-primary viewAll" href="/OnlineShop/SpecificList/1">View All</a>
         <div id="MobiesAndTablets" class="rounded-3 mt-2"></div>
         <script type="text/x-kendo-tmpl" id="template">
-
-
             <div class="box">
                 <div id="prodImg">
                  <img src=#:prod_Img# />
@@ -192,6 +189,7 @@
                  <h6>#:prod_Name#</h6>
                  <h5>#:prod_Price#</h5>
              <a id="cart" class="btn btn-primary" onclick="AddToCart(#:prod_Id#)">Add to Cart</a>
+             @* <a id="buyNow" class="btn btn-warning ms-2" onclick="GoToPayment(#:prod_Id#)">Buy Now</a> *@
              <a id="buyNow" class="btn btn-warning ms-2" href="/OnlineShop/PaymentPage/#:prod_Id#">Buy Now</a>
 
                  </div>
@@ -206,7 +204,7 @@
         <div id="LaptopAndDesktop" class="rounded-3 mt-2"></div>
     </div>
 
-    <div class="categoryBox" style="margin-bottom: 50px;">
+    <div class="categoryBox">
         <h3>TV, Audios & Cameras</h3>
         <a class="btn btn-primary viewAll" href="/OnlineShop/SpecificList/3">View All</a>
         <div id="TvAduiosAndCameras" class="rounded-3 mt-2"></div>
@@ -287,9 +285,6 @@
             url: `/OnlineShop/AddCart/`,
             data: id,
             success: function (status) {
-                alert(status);
-            },
-            error: function (status) {
                 alert(status);
             },
             
